@@ -5,7 +5,7 @@ import CartComponent from './components/CartComponent.vue'
 
 <template>
   <Header />
-  <CartComponent />
+ <!--  <CartComponent /> -->
   <router-view v-slot="{ Component }">
     <component :is="Component" :key="$route.path" />
   </router-view>

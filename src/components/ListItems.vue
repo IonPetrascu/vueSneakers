@@ -1,11 +1,18 @@
 <script lang="ts" setup>
 import ItemComponent from './ItemComponent.vue'
-const onClickAdd = () => {
+import { useItemsStore } from '@/stores/store'
+import { onMounted } from 'vue'
+
+const itemsStore = useItemsStore()
+
+const onClickAdd = (): void => {
   console.log('click add')
 }
-const onClickFavorite = () => {
+const onClickFavorite = (): void => {
   console.log('click fav')
 }
+
+onMounted(itemsStore.fetchItems)
 </script>
 <template>
   <section>
@@ -25,9 +32,11 @@ const onClickFavorite = () => {
 
     <div class="list">
       <ItemComponent
-        title="Snakers"
-        image-url="8.jpg"
-        :price="5000"
+        v-for="item in itemsStore.items"
+        :key="item.id"
+        :title="item.title"
+        :image-url="item.imageUrl"
+        :price="item.price"
         :is-added="false"
         :is-favorite="false"
         :on-click-add="onClickAdd"
@@ -37,8 +46,8 @@ const onClickFavorite = () => {
   </section>
 </template>
 <style scoped>
-s h2 {
-  margin: 40px 0px 40px 60px;
+section {
+  padding: 40px 60px 20px;
 }
 .head {
   display: flex;
