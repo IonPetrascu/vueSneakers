@@ -1,9 +1,26 @@
 <script lang="ts" setup>
 import ItemComponent from './ItemComponent.vue'
 import { useItemsStore } from '@/stores/store'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 const itemsStore = useItemsStore()
+
+const filters = ref({
+  sortBy: 'title',
+  searchQuery: ''
+})
+const onChangeSelect = (e: Event): void => {
+  const target = e.target as HTMLSelectElement
+  filters.value.sortBy = target.value
+}
+const onChangeInput = (e: Event): void => {
+  const target = e.target as HTMLInputElement
+  filters.value.searchQuery = target.value
+}
+
+watch([() => filters.value.sortBy, () => filters.value.searchQuery], () =>
+  itemsStore.fetchItems({ sortBy: filters.value.sortBy, searchQuery: filters.value.searchQuery })
+)
 
 const onClickAdd = (): void => {
   console.log('click add')
@@ -12,20 +29,22 @@ const onClickFavorite = (): void => {
   console.log('click fav')
 }
 
-onMounted(itemsStore.fetchItems)
+onMounted(() => {
+  itemsStore.fetchItems({ sortBy: filters.value.sortBy, searchQuery: filters.value.searchQuery })
+})
 </script>
 <template>
   <section>
     <div class="head">
       <h2>All sneakers</h2>
       <div class="filters">
-        <select class="select">
+        <select @change="onChangeSelect" class="select">
           <option value="title">By name</option>
           <option value="price">By price (asc)</option>
           <option value="-price">By price (desc)</option>
         </select>
         <div class="input-wrap">
-          <input class="input" placeholder="Search..." type="text" />
+          <input @input="onChangeInput" class="input" placeholder="Search..." type="text" />
         </div>
       </div>
     </div>
