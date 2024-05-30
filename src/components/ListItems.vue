@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import ItemComponent from './ItemComponent.vue'
 import { useItemsStore } from '@/stores/store'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, inject } from 'vue'
 
 const itemsStore = useItemsStore()
 
@@ -19,18 +19,28 @@ const onChangeInput = (e: Event): void => {
 }
 
 watch([() => filters.value.sortBy, () => filters.value.searchQuery], () =>
-  itemsStore.fetchItems({ sortBy: filters.value.sortBy, searchQuery: filters.value.searchQuery })
+  itemsStore
+    .fetchItems({
+      sortBy: filters.value.sortBy,
+      searchQuery: filters.value.searchQuery
+    })
+    .then(itemsStore.fetchFavorites)
 )
 
 const onClickAdd = (): void => {
-  console.log('click add')
-}
-const onClickFavorite = (): void => {
-  console.log('click fav')
+  console.log('add')
 }
 
+const addToFavorites = inject('addToFavorites')
+
 onMounted(() => {
-  itemsStore.fetchItems({ sortBy: filters.value.sortBy, searchQuery: filters.value.searchQuery })
+  itemsStore
+    .fetchItems({
+      sortBy: filters.value.sortBy,
+      searchQuery: filters.value.searchQuery
+    })
+    .then(itemsStore.fetchFavorites)
+    .catch(console.log)
 })
 </script>
 <template>
@@ -57,9 +67,9 @@ onMounted(() => {
         :image-url="item.imageUrl"
         :price="item.price"
         :is-added="false"
-        :is-favorite="false"
-        :on-click-add="onClickAdd"
-        :on-click-favorite="onClickFavorite"
+        :is-favorite="item.isFavorite"
+        :on-click-add="() => onClickAdd(item)"
+        :on-click-favorite="() => addToFavorites(item)"
       />
     </div>
   </section>

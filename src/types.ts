@@ -3,4 +3,12 @@ export interface Item {
   title: string
   imageUrl: string
   price: number
+  isFavorite?: boolean
+  isAdded?: boolean
+  favoriteId?: number
+}
+
+export interface ItemFav {
+  id: Number
+  favoriteId: Number
 }
