@@ -55,6 +55,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
 
   const addToFavorites = (object: Item): void => {
     if (object.isFavorite === false) {
+      object.isFavorite = true
       const item = {
         favoriteId: object.id
       }
@@ -68,18 +69,17 @@ export const useItemsStore = defineStore('itemsStore', () => {
         .then(res => res.json())
         .then(data => {
           console.log(data)
-          object.isFavorite = true
           object.favoriteId = data.id
         })
         .catch(console.log)
     } else {
+      object.isFavorite = false
       fetch(`https://b71d9efcf989be11.mokky.dev/favorites/${object.favoriteId}`, {
         method: 'DELETE'
       }).then(res => {
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`)
         }
-        object.isFavorite = false
         return res.text()
       })
         .then(console.log)
