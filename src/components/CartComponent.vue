@@ -1,9 +1,22 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import InfoBlock from './InfoBlock.vue'
+import { useItemsStore } from '@/stores/store'
+
+const itemStore = useItemsStore()
+
+const closeCart = (): void => {
+  itemStore.cartIsOpen = false
+}
+
+const disabledBtn = (): boolean => {
+  return itemStore.totalPrice <= 0 || itemStore.isCreatingOrder
+}
+</script>
 <template>
-  <div class="background">
-    <aside class="cart">
+  <div @click.self="closeCart" class="background">
+    <aside v-if="itemStore.cart.length > 0" class="cart">
       <div class="head">
-        <button class="close-cart">
+        <button @click="closeCart" class="close-cart">
           <svg
             width="16"
             height="14"
@@ -29,93 +42,47 @@
         </button>
         <h3>Cart</h3>
       </div>
-
-      <div class="list-items">
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
+      <div v-if="!itemStore.isCreatingOrder" class="list-items">
+        <div :key="item.id" v-for="item in itemStore.cart" class="item">
+          <img class="item-image" :src="`/src/assets/sneakers/${item.imageUrl}`" alt="" />
           <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
+            <h4 class="info-title">{{ item.title }}</h4>
+            <span class="info-price">{{ item.price }}$</span>
           </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
-            <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
-          </button>
-        </div>
-        <div class="item">
-          <img class="item-image" src="../assets/sneakers/1.jpg" alt="" />
-          <div class="item-info">
-            <h4 class="info-title">Мужские Кроссовки Nike Air Max 270</h4>
-            <span class="info-price">12 999 руб.</span>
-          </div>
-          <button class="item-delete">
+          <button @click="() => itemStore.removeFromCart(item)" class="item-delete">
             <img class="delete-img" src="../assets/images/close.svg" alt="buttton close" />
           </button>
         </div>
       </div>
+      <div v-else>Loading...</div>
       <div class="bottom">
         <div class="statistics">
           <span>Кesults:</span>
           <span class="line"></span>
-          <span>21 304 $</span>
+          <span>{{ itemStore.totalPrice }} $</span>
         </div>
         <div class="statistics">
           <span>Tax 5%:</span>
           <span class="line"></span>
-          <span>2304 $</span>
+          <span>{{ itemStore.taxPrice }} $</span>
         </div>
       </div>
-      <button class="order-btn">Order</button>
+      <button
+        :disabled="disabledBtn()"
+        @click="itemStore.createOrder"
+        class="order-btn"
+        :title="disabledBtn() ? 'Your cart is empty' : 'Click to place your order'"
+      >
+        Order
+      </button>
     </aside>
+    <InfoBlock
+      v-else
+      image-url="cart-empty.svg"
+      description="Add at least one pair of sneakers to complete your order."
+      title="Cart is empty"
+      :btn-action="closeCart"
+    />
   </div>
 </template>
 <style scoped>
@@ -223,5 +190,9 @@ h3 {
   padding-block: 18px;
   border: none;
   cursor: pointer;
+}
+.order-btn:disabled {
+  background: gray;
+  cursor: not-allowed;
 }
 </style>

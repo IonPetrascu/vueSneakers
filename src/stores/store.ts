@@ -1,8 +1,15 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Item, ItemFav } from '@/types'
+
 export const useItemsStore = defineStore('itemsStore', () => {
   const items = ref<Item[]>([])
+  const cart = ref<Item[]>([])
+
+  const isCreatingOrder = ref(false)
+  const cartIsOpen = ref(false)
+  const totalPrice = computed(() => cart.value.reduce((acc, el) => acc + el.price, 0))
+  const taxPrice = computed(() => Math.round(5 / 100 * totalPrice.value))
 
   const fetchItems = (params: { sortBy: string, searchQuery: string }): Promise<void> => {
     return new Promise<void>((resolve) => {
@@ -27,8 +34,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
             isFavorite: false,
             isAdded: false
           }))
-          resolve()
-        })
+        }).then(getCartFromLS)
         .catch(console.log)
     })
   }
@@ -87,5 +93,66 @@ export const useItemsStore = defineStore('itemsStore', () => {
     }
   }
 
-  return { items, fetchItems, fetchFavorites, addToFavorites }
+  const addToCart = (item: Item): void => {
+    item.isAdded = true
+    cart.value.push(item)
+  }
+  const removeFromCart = (item: Item): void => {
+    item.isAdded = false
+    const findIndexOfItem = items.value.findIndex((el) => el.id === item.id)
+    items.value[findIndexOfItem].isAdded = false
+    const findIndex = cart.value.findIndex((el) => el.id === item.id)
+    console.log(item)
+
+    cart.value.splice(findIndex, 1)
+  }
+
+  const onClickAddPlusCart = (item: Item): void => {
+    item.isAdded === true ? removeFromCart(item) : addToCart(item)
+  }
+
+  const createOrder = (): void => {
+    if (cart.value.length <= 0) {
+      return
+    }
+    isCreatingOrder.value = true
+    const params = {
+      items: cart.value,
+      totalPrice: totalPrice.value
+    }
+    fetch('https://b71d9efcf989be11.mokky.dev/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(params)
+    }).then((res) => {
+      if (res.ok) {
+        cart.value.forEach((el) => { el.isAdded = false })
+        cart.value = []
+        res.json()
+      }
+    })
+      .then(console.log)
+      .catch(console.log)
+      .finally(() => {
+        isCreatingOrder.value = false
+      })
+  }
+
+  const getCartFromLS = (): void => {
+    const localCart = localStorage.getItem('cart')
+    cart.value = localCart ? JSON.parse(localCart) : []
+
+    items.value = items.value.map((item) => ({
+      ...item,
+      isAdded: cart.value.some((cartItem) => cartItem.id === item.id)
+    }))
+  }
+
+  watch(cart, () => {
+    localStorage.setItem('cart', JSON.stringify(cart.value))
+  }, { deep: true })
+
+  return { items, cart, cartIsOpen, isCreatingOrder, totalPrice, taxPrice, fetchItems, fetchFavorites, addToFavorites, onClickAddPlusCart, removeFromCart, createOrder, getCartFromLS }
 })

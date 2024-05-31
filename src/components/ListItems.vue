@@ -27,8 +27,8 @@ watch([() => filters.value.sortBy, () => filters.value.searchQuery], () =>
     .then(itemsStore.fetchFavorites)
 )
 
-const onClickAdd = (): void => {
-  console.log('add')
+const onClickAdd = (item): void => {
+  itemsStore.onClickAddPlusCart(item)
 }
 
 const addToFavorites = inject('addToFavorites')
@@ -40,6 +40,7 @@ onMounted(() => {
       searchQuery: filters.value.searchQuery
     })
     .then(itemsStore.fetchFavorites)
+    .then(itemsStore.getCartFromLS)
     .catch(console.log)
 })
 </script>
@@ -66,7 +67,7 @@ onMounted(() => {
         :title="item.title"
         :image-url="item.imageUrl"
         :price="item.price"
-        :is-added="false"
+        :is-added="item.isAdded"
         :is-favorite="item.isFavorite"
         :on-click-add="() => onClickAdd(item)"
         :on-click-favorite="() => addToFavorites(item)"

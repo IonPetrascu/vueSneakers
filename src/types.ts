@@ -12,3 +12,9 @@ export interface ItemFav {
   id: Number
   favoriteId: Number
 }
+
+export interface Orders {
+  items: Item[]
+  totalPrice: number
+  id: number
+}

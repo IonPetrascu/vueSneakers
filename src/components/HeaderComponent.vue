@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { RouterLink } from 'vue-router'
+import { useItemsStore } from '@/stores/store'
+const itemStore = useItemsStore()
 </script>
 <template>
   <header>
@@ -14,9 +16,9 @@ import { RouterLink } from 'vue-router'
     </div>
     <nav>
       <ul>
-        <button class="nav-item">
+        <button @click="() => (itemStore.cartIsOpen = true)" class="nav-item">
           <img src="../assets/icons/cart-icon.svg" alt="cart icon" />
-          <span>1206$</span>
+          <span>{{ itemStore.totalPrice }} $</span>
         </button>
         <RouterLink class="nav-item" to="/favorites">
           <img src="../assets/icons/heart-icon.svg" alt="heart icon" />

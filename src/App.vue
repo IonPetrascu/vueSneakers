@@ -3,6 +3,7 @@ import Header from './components/HeaderComponent.vue'
 import CartComponent from './components/CartComponent.vue'
 import { useItemsStore } from './stores/store'
 import { provide } from 'vue'
+
 const itemStore = useItemsStore()
 
 //i just testing provide inject
@@ -11,7 +12,7 @@ provide('addToFavorites', itemStore.addToFavorites)
 
 <template>
   <Header />
-  <!--  <CartComponent /> -->
+  <CartComponent v-if="itemStore.cartIsOpen" />
   <router-view v-slot="{ Component }">
     <component :is="Component" :key="$route.path" />
   </router-view>
