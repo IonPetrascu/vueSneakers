@@ -54,7 +54,9 @@ const disabledBtn = (): boolean => {
           </button>
         </div>
       </div>
-      <div v-else>Loading...</div>
+      <div class="wrap-loading" v-else>
+        <img src="/src/assets/images/loading.svg" alt="loading dots" />
+      </div>
       <div class="bottom">
         <div class="statistics">
           <span>Кesults:</span>
@@ -96,6 +98,15 @@ const disabledBtn = (): boolean => {
   z-index: 5;
   display: flex;
   justify-content: end;
+}
+.wrap-loading {
+  height: 100%;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  & img {
+    width: 50%;
+  }
 }
 .cart {
   background-color: var(--white);
