@@ -42,7 +42,7 @@ const disabledBtn = (): boolean => {
         </button>
         <h3>Cart</h3>
       </div>
-      <div v-if="!itemStore.isCreatingOrder" class="list-items">
+      <div v-auto-animate v-if="!itemStore.isCreatingOrder" class="list-items">
         <div :key="item.id" v-for="item in itemStore.cart" class="item">
           <img class="item-image" :src="`/src/assets/sneakers/${item.imageUrl}`" alt="" />
           <div class="item-info">

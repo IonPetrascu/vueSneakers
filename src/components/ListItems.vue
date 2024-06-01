@@ -60,7 +60,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="list">
+    <div v-auto-animate class="list">
       <ItemComponent
         v-for="item in itemsStore.items"
         :key="item.id"
