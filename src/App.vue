@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Header from './components/HeaderComponent.vue'
 import CartComponent from './components/CartComponent.vue'
+import PopUpOrder from './components/PopUpOrder.vue'
 import { useItemsStore } from './stores/store'
 import { provide } from 'vue'
 
@@ -12,6 +13,7 @@ provide('addToFavorites', itemStore.addToFavorites)
 
 <template>
   <Header />
+  <PopUpOrder />
   <CartComponent v-if="itemStore.cartIsOpen" />
   <router-view v-slot="{ Component }">
     <component :is="Component" :key="$route.path" />

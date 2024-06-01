@@ -7,6 +7,8 @@ export const useItemsStore = defineStore('itemsStore', () => {
   const cart = ref<Item[]>([])
 
   const isCreatingOrder = ref(false)
+  const openPopUpOrder = ref(false)
+  const orderId = ref(null)
   const cartIsOpen = ref(false)
   const totalPrice = computed(() => cart.value.reduce((acc, el) => acc + el.price, 0))
   const taxPrice = computed(() => Math.round(5 / 100 * totalPrice.value))
@@ -110,7 +112,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
   const onClickAddPlusCart = (item: Item): void => {
     item.isAdded === true ? removeFromCart(item) : addToCart(item)
   }
-
   const createOrder = (): void => {
     if (cart.value.length <= 0) {
       return
@@ -127,13 +128,20 @@ export const useItemsStore = defineStore('itemsStore', () => {
       },
       body: JSON.stringify(params)
     }).then((res) => {
-      if (res.ok) {
-        cart.value.forEach((el) => { el.isAdded = false })
-        cart.value = []
-        res.json()
+      if (!res.ok) {
+        orderId.value = null
+        openPopUpOrder.value = true
+        throw new Error(`HTTP error! status: ${res.status}`)
       }
+      cart.value = []
+      items.value.forEach((el) => { el.isAdded = false })
+
+      return res.json()
     })
-      .then(console.log)
+      .then((data) => {
+        openPopUpOrder.value = true
+        orderId.value = data.id
+      })
       .catch(console.log)
       .finally(() => {
         isCreatingOrder.value = false
@@ -154,5 +162,5 @@ export const useItemsStore = defineStore('itemsStore', () => {
     localStorage.setItem('cart', JSON.stringify(cart.value))
   }, { deep: true })
 
-  return { items, cart, cartIsOpen, isCreatingOrder, totalPrice, taxPrice, fetchItems, fetchFavorites, addToFavorites, onClickAddPlusCart, removeFromCart, createOrder, getCartFromLS }
+  return { items, cart, orderId, cartIsOpen, isCreatingOrder, totalPrice, openPopUpOrder, taxPrice, fetchItems, fetchFavorites, addToFavorites, onClickAddPlusCart, removeFromCart, createOrder, getCartFromLS }
 })
