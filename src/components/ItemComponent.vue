@@ -12,20 +12,11 @@ defineProps({
 
 <template>
   <div class="item">
-    <img
-      @click="onClickFavorite"
-      v-if="isFavorite"
-      class="add-fav"
-      src="../assets/images/heart-active.svg"
-      alt=""
-    />
-    <img
-      @click="onClickFavorite"
-      v-else
-      class="add-fav"
-      src="../assets/images/heart-inactive.svg"
-      alt=""
-    />
+    <button v-if="onClickFavorite" @click="onClickFavorite">
+      <img v-if="isFavorite" class="add-fav" src="../assets/images/heart-active.svg" alt="" />
+      <img v-else class="add-fav" src="../assets/images/heart-inactive.svg" alt="" />
+    </button>
+
     <img class="img-item" :src="`/src/assets/sneakers/${imageUrl}`" alt="sneaker 1" />
     <h4 class="title">{{ title }}</h4>
     <div class="bottom">
@@ -33,7 +24,7 @@ defineProps({
         <span class="price">PRICE:</span>
         <span class="price-count">{{ price }} $</span>
       </div>
-      <button @click="onClickAdd" class="add-btn">
+      <button v-if="onClickAdd" @click="onClickAdd" class="add-btn">
         <img v-if="isAdded" src="../assets/images/btn-succes.svg" alt="add button" />
         <img v-else src="../assets/images/add-btn.svg" alt="add button" />
       </button>

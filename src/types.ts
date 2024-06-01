@@ -9,8 +9,9 @@ export interface Item {
 }
 
 export interface ItemFav {
-  id: Number
-  favoriteId: Number
+  id: number
+  favoriteId: number
+  item: Item
 }
 
 export interface Orders {

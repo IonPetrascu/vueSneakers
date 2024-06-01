@@ -5,6 +5,7 @@ import type { Item, ItemFav } from '@/types'
 export const useItemsStore = defineStore('itemsStore', () => {
   const items = ref<Item[]>([])
   const cart = ref<Item[]>([])
+  const favorites = ref<ItemFav[]>([])
 
   const isCreatingOrder = ref(false)
   const openPopUpOrder = ref(false)
@@ -28,6 +29,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
           if (!res.ok) {
             throw new Error(`HTTP error! status: ${res.status}`)
           }
+          resolve()
           return res.json()
         })
         .then((data: Item[]) => {
@@ -42,9 +44,10 @@ export const useItemsStore = defineStore('itemsStore', () => {
   }
 
   const fetchFavorites = (): Promise<void> => {
-    fetch('https://b71d9efcf989be11.mokky.dev/favorites')
+    fetch('https://b71d9efcf989be11.mokky.dev/favorites?_relations=items')
       .then(res => res.json())
       .then((data: ItemFav[]) => {
+        favorites.value = data
         items.value = items.value.map(item => {
           const favorite = data.find(favorite => favorite.favoriteId === item.id)
 
@@ -65,7 +68,8 @@ export const useItemsStore = defineStore('itemsStore', () => {
     if (object.isFavorite === false) {
       object.isFavorite = true
       const item = {
-        favoriteId: object.id
+        favoriteId: object.id,
+        item_id: object.id
       }
       fetch('https://b71d9efcf989be11.mokky.dev/favorites', {
         method: 'POST',
@@ -76,7 +80,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data)
           object.favoriteId = data.id
         })
         .catch(console.log)
@@ -90,7 +93,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
         }
         return res.text()
       })
-        .then(console.log)
         .catch(console.error)
     }
   }
@@ -104,7 +106,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
     const findIndexOfItem = items.value.findIndex((el) => el.id === item.id)
     items.value[findIndexOfItem].isAdded = false
     const findIndex = cart.value.findIndex((el) => el.id === item.id)
-    console.log(item)
 
     cart.value.splice(findIndex, 1)
   }
@@ -150,7 +151,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
 
   const getCartFromLS = (): void => {
     const localCart = localStorage.getItem('cart')
-    cart.value = localCart ? JSON.parse(localCart) : []
+    cart.value = localCart !== null ? JSON.parse(localCart) : []
 
     items.value = items.value.map((item) => ({
       ...item,
@@ -162,5 +163,5 @@ export const useItemsStore = defineStore('itemsStore', () => {
     localStorage.setItem('cart', JSON.stringify(cart.value))
   }, { deep: true })
 
-  return { items, cart, orderId, cartIsOpen, isCreatingOrder, totalPrice, openPopUpOrder, taxPrice, fetchItems, fetchFavorites, addToFavorites, onClickAddPlusCart, removeFromCart, createOrder, getCartFromLS }
+  return { items, cart, favorites, orderId, cartIsOpen, isCreatingOrder, totalPrice, openPopUpOrder, taxPrice, fetchItems, fetchFavorites, addToFavorites, onClickAddPlusCart, removeFromCart, createOrder, getCartFromLS }
 })
