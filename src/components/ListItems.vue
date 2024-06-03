@@ -2,7 +2,6 @@
 import ItemComponent from './ItemComponent.vue'
 import { useItemsStore } from '@/stores/store'
 import { onMounted, ref, watch, inject } from 'vue'
-
 const itemsStore = useItemsStore()
 
 const filters = ref({
@@ -73,6 +72,7 @@ onMounted(() => {
         :on-click-favorite="() => addToFavorites(item)"
       />
     </div>
+
   </section>
 </template>
 <style scoped>

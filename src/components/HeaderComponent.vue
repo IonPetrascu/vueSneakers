@@ -26,7 +26,8 @@ const itemStore = useItemsStore()
         </RouterLink>
         <RouterLink class="nav-item" to="profile">
           <img src="../assets/icons/user-icon.svg" alt="user icon" />
-          <span>Profile</span>
+          <span v-if="itemStore.currentUser === null">Profile</span>
+          <span v-else>{{ itemStore.currentUser.fullName }}</span>
         </RouterLink>
       </ul>
     </nav>
