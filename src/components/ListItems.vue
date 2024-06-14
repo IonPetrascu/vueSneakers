@@ -46,7 +46,7 @@ onMounted(() => {
 <template>
   <section>
     <div class="head">
-      <h2>All sneakers</h2>
+      <h2>{{ filters.searchQuery  ? `Search ${filters.searchQuery}` : 'All sneakers' }}</h2>
       <div class="filters">
         <select @change="onChangeSelect" class="select">
           <option value="title">By name</option>
@@ -72,7 +72,6 @@ onMounted(() => {
         :on-click-favorite="() => addToFavorites(item)"
       />
     </div>
-
   </section>
 </template>
 <style scoped>
