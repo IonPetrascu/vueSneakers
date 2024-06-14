@@ -5,15 +5,13 @@ const itemStore = useItemsStore()
 </script>
 <template>
   <header>
-    <div class="logo">
-      <RouterLink to="/">
-        <img src="../assets/images/logo.png" alt="VUE SNEAKERS" />
-      </RouterLink>
+    <RouterLink class="logo" to="/">
+      <img src="../assets/images/logo.png" alt="VUE SNEAKERS" />
       <div class="logo-title">
         <h1>VUE SNEAKERS</h1>
         <span>Best shop of sneakers</span>
       </div>
-    </div>
+    </RouterLink>
     <nav>
       <ul>
         <button @click="() => (itemStore.cartIsOpen = true)" class="nav-item">
@@ -46,6 +44,7 @@ header {
   display: flex;
   align-items: center;
   gap: 16px;
+  text-decoration: none;
 
   img {
     width: 40px;
