@@ -242,7 +242,10 @@ export const useItemsStore = defineStore('itemsStore', () => {
       console.log(error)
     }
   }
-
+  const logOut = (): void => {
+    currentUser.value = null
+    localStorage.removeItem('userToken')
+  }
   watch(cart, () => {
     localStorage.setItem('cart', JSON.stringify(cart.value))
   }, { deep: true })
@@ -269,6 +272,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
     getCartFromLS,
     signUp,
     signIn,
-    getMe
+    getMe,
+    logOut
   }
 })
