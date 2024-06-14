@@ -18,7 +18,8 @@ const router = createRouter({
       component: async () => await import('../views/ProfileView.vue')
     }
 
-  ]
+  ],
+  linkActiveClass: 'active-link'
 })
 
 export default router

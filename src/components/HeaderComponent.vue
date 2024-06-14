@@ -89,4 +89,10 @@ nav {
     color: #5c5c5c;
   }
 }
+.active-link {
+  span {
+    color: #000;
+    font-weight: 600;
+  }
+}
 </style>
