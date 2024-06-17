@@ -12,13 +12,14 @@ const closePopup = (): void => {
     <div v-if="itemStore.orderId !== null" class="popup-content">
       <span class="close-btn" @click="closePopup">&times;</span>
       <h2>Your Order №{{ itemStore.orderId }} is Confirmed!</h2>
-      <img class="img" src="/src/assets/images/smile.png" alt="">
+      <img class="img" src="/src/assets/images/smile.png" alt="" />
       <p>
         Thank you for your purchase. Your order number <span id="order-number"></span> has been
         successfully placed.
       </p>
       <div class="buttons">
-        <button class="btn">View Orders</button>
+        <router-link @click="closePopup" class="btn" to="/orders"> View Orders </router-link>
+
         <button class="btn" @click="closePopup">Close</button>
       </div>
     </div>
@@ -83,6 +84,7 @@ const closePopup = (): void => {
   border-radius: 5px;
   cursor: pointer;
   width: 50%;
+  text-decoration: none;
 }
 
 .btn:hover {

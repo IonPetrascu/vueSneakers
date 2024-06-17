@@ -6,6 +6,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
   const items = ref<Item[]>([])
   const cart = ref<Item[]>([])
   const favorites = ref<ItemFav[]>([])
+  const orders = ref([])
 
   const currentUser = ref(null)
   const typeForm = ref('signup')
@@ -47,7 +48,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
         .catch(console.log)
     })
   }
-
   const fetchFavorites = (): Promise<void> => {
     fetch('https://b71d9efcf989be11.mokky.dev/favorites?_relations=items', {
       headers: {
@@ -72,7 +72,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
       })
       .catch(console.error)
   }
-
   const addToFavorites = (object: Item): void => {
     if (object.isFavorite === false) {
       object.isFavorite = true
@@ -106,7 +105,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
         .catch(console.error)
     }
   }
-
   const addToCart = (item: Item): void => {
     item.isAdded = true
     cart.value.push(item)
@@ -119,7 +117,6 @@ export const useItemsStore = defineStore('itemsStore', () => {
 
     cart.value.splice(findIndex, 1)
   }
-
   const onClickAddPlusCart = (item: Item): void => {
     item.isAdded === true ? removeFromCart(item) : addToCart(item)
   }
@@ -131,7 +128,8 @@ export const useItemsStore = defineStore('itemsStore', () => {
     isCreatingOrder.value = true
     const params = {
       items: cart.value,
-      totalPrice: totalPrice.value
+      totalPrice: totalPrice.value,
+      userId: currentUser.value.id
     }
     fetch('https://b71d9efcf989be11.mokky.dev/orders', {
       method: 'POST',
@@ -163,7 +161,29 @@ export const useItemsStore = defineStore('itemsStore', () => {
         isCreatingOrder.value = false
       })
   }
-
+  const getOrders = (): void => {
+    if (currentUser.value === null) {
+      throw new Error('User not login')
+    }
+    fetch(`https://b71d9efcf989be11.mokky.dev/orders?userId=${currentUser.value.id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken.value}`
+      }
+    }).then((res) => {
+      if (res.status === 401) {
+        throw new Error(`HTTP error! status: ${res.status}`)
+      } else if (res.status === 404) {
+        throw new Error(`HTTP error! status: ${res.status}`)
+      }
+      return res.json()
+    })
+      .then((data) => {
+        orders.value = data
+      })
+      .catch(console.log)
+  }
   const getCartFromLS = (): void => {
     const localCart = localStorage.getItem('cart')
     cart.value = localCart !== null ? JSON.parse(localCart) : []
@@ -254,6 +274,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
     items,
     cart,
     favorites,
+    orders,
     currentUser,
     typeForm,
     orderId,
@@ -269,6 +290,7 @@ export const useItemsStore = defineStore('itemsStore', () => {
     onClickAddPlusCart,
     removeFromCart,
     createOrder,
+    getOrders,
     getCartFromLS,
     signUp,
     signIn,

@@ -15,7 +15,12 @@ const router = createRouter({
     }, {
       path: '/profile',
       name: 'profile',
-      component: async () => await import('../views/ProfileView.vue')
+
+       component: async () => await import('../views/ProfileView.vue')
+    }, {
+      path: '/orders',
+      name: 'orders',
+      component: async () => await import('../views/OrdersView.vue')
     }
 
   ],

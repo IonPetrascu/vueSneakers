@@ -22,6 +22,10 @@ const itemStore = useItemsStore()
           <img src="../assets/icons/heart-icon.svg" alt="heart icon" />
           <span>Favorites</span>
         </RouterLink>
+        <RouterLink class="nav-item" to="/orders">
+          <img src="../assets/images/orders.svg" alt="orders image" />
+          <span>Orders</span>
+        </RouterLink>
         <RouterLink class="nav-item" to="profile">
           <img src="../assets/icons/user-icon.svg" alt="user icon" />
           <span v-if="itemStore.currentUser === null">Profile</span>
