@@ -129,8 +129,11 @@ export const useItemsStore = defineStore('itemsStore', () => {
     const params = {
       items: cart.value,
       totalPrice: totalPrice.value,
-      userId: currentUser.value.id
+      userId: currentUser.value.id,
+      date: Date.now()
     }
+    console.log(Date.now());
+
     fetch('https://b71d9efcf989be11.mokky.dev/orders', {
       method: 'POST',
       headers: {

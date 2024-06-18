@@ -14,7 +14,11 @@ onMounted(() => {
   <div class="wrapper">
     <h1>Orders list</h1>
     <div class="order" :key="el.id" v-for="(el, index) in itemsStore.orders">
-      <h3>Order №{{ index + 1 }}</h3>
+      <div class="top">
+        <h3>Order №{{ index + 1 }}</h3>
+        <span>{{ new Date(el.date).toLocaleString() }}</span>
+      </div>
+
       <div class="head">
         <span>Id </span>
         <span>Image</span>
@@ -45,7 +49,7 @@ onMounted(() => {
   align-content: center;
   justify-content: space-between;
   border-top: 1px solid #000;
-  padding-block:5px ;
+  padding-block: 5px;
   font-weight: 600;
 }
 .bottom {
@@ -56,6 +60,10 @@ onMounted(() => {
 }
 .total-price {
   font-weight: 600;
-  background-color: #fcb858;
+}
+.top{
+  display: flex;
+  justify-content: space-between;
+  padding-block: 5px;
 }
 </style>
