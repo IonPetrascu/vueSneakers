@@ -19,3 +19,7 @@ export interface Orders {
   totalPrice: number
   id: number
 }
+export interface ItemByPrice {
+  title: string
+  price: number
+}

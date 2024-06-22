@@ -21,6 +21,10 @@ const router = createRouter({
       path: '/orders',
       name: 'orders',
       component: async () => await import('../views/OrdersView.vue')
+    }, {
+      path: '/chart',
+      name: 'chart',
+      component: async () => await import('../views/ChartView.vue')
     }
 
   ],

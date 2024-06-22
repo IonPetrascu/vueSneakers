@@ -22,6 +22,9 @@ const itemStore = useItemsStore()
           <img src="../assets/icons/heart-icon.svg" alt="heart icon" />
           <span>Favorites</span>
         </RouterLink>
+        <RouterLink class="nav-item" to="/chart">
+          <span>Chart</span>
+        </RouterLink>
         <RouterLink class="nav-item" to="/orders">
           <img src="../assets/images/orders.svg" alt="orders image" />
           <span>Orders</span>
